@@ -1102,6 +1102,8 @@ const App = () => {
               avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata.name)}&background=7c3aed&color=fff`,
             });
           
+          console.log('Profile creation result for 406 error:', insertError);
+          
           if (!insertError) {
             const { data: newProfile } = await supabase
               .from('profiles')
@@ -1110,6 +1112,7 @@ const App = () => {
               .single();
             
             if (newProfile) {
+              console.log('Profile created successfully after 406 error');
               setCurrentUser({
                 id: newProfile.id,
                 name: newProfile.name,
@@ -1123,6 +1126,8 @@ const App = () => {
           }
         }
         
+        // Only show "no profile" if creation also failed
+        console.log('Both fetch and creation failed, showing no profile screen');
         (window as any).setShowNoProfile?.(true);
         return;
       }
@@ -1178,6 +1183,7 @@ const App = () => {
       }
     }
   };
+};
 
   // Methods
   const login = async (email: string, password: string, role: Role, name?: string) => {
