@@ -1,11 +1,4 @@
 
-/**
- * BACKEND SERVER TEMPLATE (Node.js / Express)
- * 
- * Dependencies:
- * npm install express cors dotenv agora-token axios
- */
-
 const express = require('express');
 const cors = require('cors');
 const { RtcTokenBuilder, RtcRole } = require('agora-token');
@@ -13,7 +6,13 @@ const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://your-app-name.vercel.app' // Replace with your actual Vercel URL
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // --- CONFIGURATION ---
