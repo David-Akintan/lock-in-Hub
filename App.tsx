@@ -988,26 +988,147 @@ const App = () => {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
+      console.log('Profile fetch result:', { data, error });
+
       if (error && error.code === 'PGRST116') {
-        // Profile doesn't exist, show sign-up prompt
+        console.log('Profile not found, attempting to create from auth metadata');
+        // Profile doesn't exist - try to create it from auth metadata
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log('Auth user metadata:', user?.user_metadata);
+        
+        if (user?.user_metadata?.name && user?.user_metadata?.role) {
+          // Try to create profile directly
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              name: user.user_metadata.name,
+              role: user.user_metadata.role,
+              avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata.name)}&background=7c3aed&color=fff`,
+            });
+          
+          console.log('Profile creation result:', insertError);
+          
+          if (!insertError) {
+            // Profile created successfully, fetch it
+            const { data: newProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', userId)
+              .single();
+            
+            if (newProfile) {
+              setCurrentUser({
+                id: newProfile.id,
+                name: newProfile.name,
+                email: user.email,
+                role: newProfile.role as Role,
+                avatar: newProfile.avatar || `https://ui-avatars.com/api/?name=${newProfile.name}&background=7c3aed&color=fff`,
+                points: newProfile.points
+              });
+              return;
+            }
+          }
+        }
+        
+        // If we get here, profile creation failed - show "no profile" screen
         (window as any).setShowNoProfile?.(true);
         return;
       }
 
       if (error && error.code === '42501') {
-        // RLS policy violation - profile doesn't exist or no access
+        console.log('RLS policy violation, attempting to create from auth metadata');
+        // RLS policy violation - try the same approach
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log('Auth user metadata for RLS error:', user?.user_metadata);
+        
+        if (user?.user_metadata?.name && user?.user_metadata?.role) {
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              name: user.user_metadata.name,
+              role: user.user_metadata.role,
+              avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata.name)}&background=7c3aed&color=fff`,
+            });
+          
+          console.log('Profile creation result for RLS:', insertError);
+          
+          if (!insertError) {
+            const { data: newProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', userId)
+              .single();
+            
+            if (newProfile) {
+              setCurrentUser({
+                id: newProfile.id,
+                name: newProfile.name,
+                email: user.email,
+                role: newProfile.role as Role,
+                avatar: newProfile.avatar || `https://ui-avatars.com/api/?name=${newProfile.name}&background=7c3aed&color=fff`,
+                points: newProfile.points
+              });
+              return;
+            }
+          }
+        }
+        
         (window as any).setShowNoProfile?.(true);
         return;
       }
 
-      if (error) throw error;
+      // Handle 406 Not Acceptable and other errors
+      if (error) {
+        console.log('Other profile fetch error:', error);
+        // Try to create from auth metadata as fallback
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.user_metadata?.name && user?.user_metadata?.role) {
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              name: user.user_metadata.name,
+              role: user.user_metadata.role,
+              avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata.name)}&background=7c3aed&color=fff`,
+            });
+          
+          if (!insertError) {
+            const { data: newProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', userId)
+              .single();
+            
+            if (newProfile) {
+              setCurrentUser({
+                id: newProfile.id,
+                name: newProfile.name,
+                email: user.email,
+                role: newProfile.role as Role,
+                avatar: newProfile.avatar || `https://ui-avatars.com/api/?name=${newProfile.name}&background=7c3aed&color=fff`,
+                points: newProfile.points
+              });
+              return;
+            }
+          }
+        }
+        
+        (window as any).setShowNoProfile?.(true);
+        return;
+      }
+      
       if (data) {
+        console.log('Profile found successfully:', data);
         setCurrentUser({
           id: data.id,
           name: data.name,
@@ -1019,8 +1140,39 @@ const App = () => {
       }
     } catch (e) {
       console.error('Error fetching profile:', e);
-      // If it's a profile access error, show sign-up prompt
-      if (typeof e === 'object' && e && 'code' in e && e.code === '42501') {
+      // If it's a profile access error, try to create from auth metadata
+      if (typeof e === 'object' && e && 'code' in e && (e.code === '42501' || e.code === 'PGRST116')) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.user_metadata?.name && user?.user_metadata?.role) {
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              name: user.user_metadata.name,
+              role: user.user_metadata.role,
+              avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata.name)}&background=7c3aed&color=fff`,
+            });
+          
+          if (!insertError) {
+            const { data: newProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', userId)
+              .single();
+            
+            if (newProfile) {
+              setCurrentUser({
+                id: newProfile.id,
+                name: newProfile.name,
+                email: user.email,
+                role: newProfile.role as Role,
+                avatar: newProfile.avatar || `https://ui-avatars.com/api/?name=${newProfile.name}&background=7c3aed&color=fff`,
+                points: newProfile.points
+              });
+              return;
+            }
+        }
+        
         (window as any).setShowNoProfile?.(true);
         return;
       }

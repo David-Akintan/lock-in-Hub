@@ -9,7 +9,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://your-app-name.vercel.app' // Replace with your actual Vercel URL
+    'https://lock-in-hub.vercel.app/' // Replace with your actual Vercel URL
   ],
   credentials: true
 }));
