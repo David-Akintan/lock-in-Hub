@@ -1,0 +1,7 @@
+{
+  "name": " Lock-In Hub DAX copy ",
+  "description": "The ultimate community platform for trading mastery, fitness discipline, and spiritual growth.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

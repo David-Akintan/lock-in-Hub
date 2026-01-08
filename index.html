@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Lock-In Hub</title>
+    
+    <!-- Performance Optimization: Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://picsum.photos">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['IBM Plex Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+              mono: ['IBM Plex Mono', 'monospace'],
+            },
+            colors: {
+              obsidian: '#050505', // Richer Black
+              accent: '#8B5CF6', // Electric Violet (More refined than neon purple)
+              accentDim: '#6D28D9', // Deep Purple
+              accentGlow: '#A78BFA', // Soft Highlight
+              deepBg: '#020204', // Almost absolute black
+              danger: '#EF4444', 
+              success: '#10B981', 
+            },
+            animation: {
+              'pulse-fast': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'shimmer': 'shimmer 3s linear infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'breathe': 'breathe 8s ease-in-out infinite',
+              'deep-pulse': 'deepPulse 4s ease-in-out infinite',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              shimmer: {
+                '0%': { backgroundPosition: '-200% 0' },
+                '100%': { backgroundPosition: '200% 0' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' },
+              },
+              breathe: {
+                '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                '50%': { transform: 'scale(1.1)', opacity: '1', filter: 'brightness(1.2)' },
+              },
+              deepPulse: {
+                '0%, 100%': { opacity: '0.1' },
+                '50%': { opacity: '0.3' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      :root {
+        --bg-main: #ffffff;
+      }
+      
+      html, body {
+        height: 100%;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        font-family: 'IBM Plex Sans', sans-serif;
+      }
+
+      /* Native Browser Virtualization for long lists */
+      .render-lazy {
+        content-visibility: auto;
+        contain-intrinsic-size: 1px 100px; /* Approximate height of a list item */
+      }
+
+      body {
+        background-color: #f4f4f5; 
+        color: #18181b; 
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      html.dark body {
+        background-color: #020204;
+        /* Ultra-Premium Deep Gradient - Subtle and Deep */
+        background-image: 
+          radial-gradient(circle at 50% -20%, #1e1b4b 0%, #020204 45%), /* Deep Indigo top light */
+          radial-gradient(circle at 80% 40%, rgba(50, 20, 80, 0.05) 0%, transparent 40%); /* Very subtle side accent */
+        background-attachment: fixed;
+        color: #FFFFFF;
+      }
+
+      /* LUXURY VISION GLASS - "Diamond Cut" Style */
+      /* Removed the bright outer glow. Added crisp 1px borders and deep shadows */
+      .vision-glass {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+        border-radius: 26px;
+      }
+
+      html.dark .vision-glass {
+        /* Deep, dark glass */
+        background: rgba(10, 10, 12, 0.6); 
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        
+        /* The "Luxury" Border: Very thin, barely visible, just catches light */
+        border: 1px solid rgba(255, 255, 255, 0.08); 
+        
+        /* Deep shadow for lift, inset highlight for depth */
+        box-shadow: 
+          0 20px 40px -10px rgba(0, 0, 0, 0.8), /* Deep drop shadow */
+          inset 0 1px 0 rgba(255, 255, 255, 0.05); /* Top lip highlight */
+      }
+      
+      .vision-glass-light {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 22px;
+      }
+      
+      html.dark .vision-glass-light {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      /* Pro Animation: Staggered Slide Up */
+      @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .animate-slide-up-fade {
+        opacity: 0; /* Initially hidden */
+        animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      /* Refined Scrollbar */
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1); 
+        border-radius: 2px;
+      }
+      html.dark ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(139, 92, 246, 0.5); /* Violet hover */
+      }
+
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+      .pt-safe-top { padding-top: env(safe-area-inset-top); }
+      .pb-safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 20px); }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
