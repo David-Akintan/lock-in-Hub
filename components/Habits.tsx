@@ -442,7 +442,7 @@ const RiskCalculatorWidget: React.FC = () => {
                 <div className="p-5 space-y-5 bg-zinc-50 dark:bg-[#050505] animate-in slide-in-from-top-4 border-t border-zinc-200 dark:border-white/5 shadow-inner">
                     <div className="space-y-4">
                         {/* Row 1: Market Selection */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-[9px] font-bold text-zinc-500 dark:text-white/30 uppercase tracking-[0.2em] pl-1">Market</label>
                                 <div className="relative group">
@@ -464,7 +464,7 @@ const RiskCalculatorWidget: React.FC = () => {
                         </div>
 
                         {/* Row 2: Account Params */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-[9px] font-bold text-zinc-500 dark:text-white/30 uppercase tracking-[0.2em] pl-1">Balance</label>
                                 <div className="relative">
@@ -482,7 +482,7 @@ const RiskCalculatorWidget: React.FC = () => {
                         </div>
 
                         {/* Row 3: Trade Params */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-[9px] font-bold text-zinc-500 dark:text-white/30 uppercase tracking-[0.2em] pl-1">Entry</label>
                                 <input type="number" value={entry} onChange={e => setEntry(e.target.value)} className="w-full bg-white dark:bg-[#121212] border border-zinc-200 dark:border-white/10 rounded-xl px-3 py-2.5 text-xs text-zinc-900 dark:text-white font-mono focus:border-zinc-400 dark:focus:border-white/30 focus:outline-none transition-all" placeholder="0.00000" />
